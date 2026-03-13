@@ -1,19 +1,19 @@
 # Style Guide
 
 ## 设计参考
-- [参考网站1 URL] — 借鉴要素（配色/布局/卡片/字体/间距）
-- [参考网站2 URL] — 借鉴要素
-
-## DaisyUI Theme
-`data-theme="DAISY_THEME"` — 在 layout.tsx 中设置
+- [HotDoc](https://www.hotdoc.com.au) — Clean search-first UX, prominent search bar, card-based results, blue/white medical theme
+- [HealthDirect](https://www.healthdirect.gov.au/australian-health-services) — Government service finder, map + list layout, filter sidebar
+- [Zocdoc](https://www.zocdoc.com) — Modern medical directory, clean cards with ratings, good mobile UX
 
 ## 配色方案
-- Primary: #2563eb (修改 globals.css @theme)
-- Secondary: #7c3aed
-- Accent: #f59e0b
+DaisyUI theme: emerald (medical green feel)
+- Primary: emerald green (#059669)
+- Cards: white with subtle shadow
+- Background: light gray (#f8fafc)
 
 ## 设计决策
-- [ ] 卡片风格：
-- [ ] 布局模式：
-- [ ] 字体层级：
-- [ ] 间距规范：
+- Search bar prominent at top (HotDoc style)
+- Map + list split view on desktop (HealthDirect style)
+- State-based browsing for SEO
+- Clean clinic cards with icon badges for phone/hours/website
+- Mobile: list view by default, map toggle

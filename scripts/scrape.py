@@ -1,42 +1,33 @@
 #!/usr/bin/env python3
+"""Scrape AU GP clinics and medical centres from OpenStreetMap via Overpass API.
+Free, no API key needed. Run: python3 scripts/scrape.py
+Then: python3 scripts/process-data.py /tmp/au-gp-clinics.json
 """
-Scraper boilerplate for SITE_TITLE
-Usage: python3 scripts/scrape.py
+import urllib.request, json, sys
 
-Output: src/data/records.json
-"""
-import json
-import os
-import time
-from pathlib import Path
-from urllib.request import urlopen, Request
+OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+QUERY = """[out:json][timeout:120];
+area["ISO3166-1"="AU"]->.a;
+(
+  node["amenity"="doctors"](area.a);
+  node["amenity"="clinic"](area.a);
+  node["healthcare"="doctor"](area.a);
+  way["amenity"="doctors"](area.a);
+  way["amenity"="clinic"](area.a);
+  way["healthcare"="doctor"](area.a);
+);
+out body center;"""
 
-DATA_DIR = Path(__file__).parent.parent / "src" / "data"
-DATA_DIR.mkdir(parents=True, exist_ok=True)
+OUT = sys.argv[1] if len(sys.argv) > 1 else "/tmp/au-gp-clinics.json"
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (compatible; StarMap Bot; +https://rollersoft.com.au)"
-}
+print(f"Querying Overpass API for AU GP clinics...")
+data = urllib.parse.urlencode({"data": QUERY}).encode()
+req = urllib.request.Request(OVERPASS_URL, data=data)
+with urllib.request.urlopen(req, timeout=180) as resp:
+    result = json.loads(resp.read())
 
-def fetch(url: str) -> str:
-    req = Request(url, headers=HEADERS)
-    with urlopen(req, timeout=30) as resp:
-        return resp.read().decode()
-
-def scrape():
-    """TODO: Implement scraper"""
-    records = []
-    
-    # Example:
-    # html = fetch("https://example.com/data")
-    # ... parse and extract ...
-    # records.append({"name": ..., "value": ...})
-    
-    output = DATA_DIR / "records.json"
-    with open(output, "w") as f:
-        json.dump(records, f, indent=2, ensure_ascii=False)
-    
-    print(f"Scraped {len(records)} records → {output}")
-
-if __name__ == "__main__":
-    scrape()
+print(f"Got {len(result['elements'])} elements")
+with open(OUT, "w") as f:
+    json.dump(result, f)
+print(f"Saved to {OUT}")
+print("Next: python3 scripts/process-data.py " + OUT)

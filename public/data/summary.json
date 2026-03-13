@@ -1,0 +1,17 @@
+{
+  "total": 2753,
+  "by_state": {
+    "ACT": 55,
+    "NSW": 878,
+    "NT": 48,
+    "QLD": 649,
+    "SA": 147,
+    "TAS": 52,
+    "VIC": 645,
+    "WA": 279
+  },
+  "with_phone": 764,
+  "with_hours": 649,
+  "with_address": 2753,
+  "with_website": 743
+}

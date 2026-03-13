@@ -1,59 +1,86 @@
+import { STATE_NAMES } from "@/lib/types";
+import type { Summary } from "@/lib/types";
+import summaryData from "../../public/data/summary.json";
+import ClinicList from "@/components/ClinicList";
+import clinicsData from "../../public/data/clinics.json";
+import type { Clinic } from "@/lib/types";
+
+const summary = summaryData as Summary;
+const clinics = clinicsData as Clinic[];
+
+const STATES = ["NSW", "VIC", "QLD", "WA", "SA", "TAS", "ACT", "NT"] as const;
+
 export default function Home() {
   return (
-    <div className="space-y-12">
+    <div>
       {/* Hero */}
-      <section className="hero min-h-[40vh] bg-base-200 rounded-box">
-        <div className="hero-content text-center">
-          <div className="max-w-2xl">
-            <h1 className="text-5xl font-bold">SITE_TITLE</h1>
-            <p className="py-6 text-lg text-base-content/70">SITE_DESCRIPTION</p>
-            {/* Search bar scaffold */}
-            <div className="form-control w-full max-w-lg mx-auto">
-              <div className="input-group flex">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="input input-bordered flex-1"
-                />
-                <button className="btn btn-primary">Search</button>
-              </div>
+      <section className="bg-emerald-700 text-white py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Find a GP Clinic Near You
+          </h1>
+          <p className="text-lg text-emerald-100 mb-2">
+            {summary.total.toLocaleString()} GP clinics and medical centres across Australia
+          </p>
+          <p className="text-sm text-emerald-200">
+            Free directory · No booking pressure · Real data from OpenStreetMap
+          </p>
+        </div>
+      </section>
+
+      {/* Stats */}
+      <section className="py-8 bg-white border-b">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+            <div>
+              <div className="text-2xl font-bold text-emerald-700">{summary.total.toLocaleString()}</div>
+              <div className="text-sm text-slate-500">Clinics Listed</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-emerald-700">{summary.with_phone.toLocaleString()}</div>
+              <div className="text-sm text-slate-500">With Phone</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-emerald-700">{summary.with_hours.toLocaleString()}</div>
+              <div className="text-sm text-slate-500">With Hours</div>
+            </div>
+            <div>
+              <div className="text-2xl font-bold text-emerald-700">{Object.keys(summary.by_state).length}</div>
+              <div className="text-sm text-slate-500">States & Territories</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats scaffold */}
-      <section className="stats stats-vertical lg:stats-horizontal shadow w-full">
-        <div className="stat">
-          <div className="stat-title">Total Records</div>
-          <div className="stat-value">0</div>
-          <div className="stat-desc">From public data sources</div>
-        </div>
-        <div className="stat">
-          <div className="stat-title">Categories</div>
-          <div className="stat-value">0</div>
-        </div>
-        <div className="stat">
-          <div className="stat-title">Last Updated</div>
-          <div className="stat-value text-lg">2026</div>
+      {/* Browse by State */}
+      <section id="states" className="py-12">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-6 text-slate-800">Browse by State</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {STATES.map((st) => (
+              <a
+                key={st}
+                href={`/state/${st.toLowerCase()}`}
+                className="card bg-white shadow-md hover:shadow-lg transition-shadow border border-slate-100"
+              >
+                <div className="card-body p-4 text-center">
+                  <h3 className="font-semibold text-emerald-800">{STATE_NAMES[st]}</h3>
+                  <p className="text-2xl font-bold text-slate-700">
+                    {(summary.by_state[st] || 0).toLocaleString()}
+                  </p>
+                  <p className="text-xs text-slate-400">clinics</p>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Card grid scaffold */}
-      <section>
-        <h2 className="text-2xl font-bold mb-6">Browse</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="card bg-base-100 shadow-md hover:shadow-lg transition-shadow border border-base-300">
-              <div className="card-body">
-                <h3 className="card-title">Item {i}</h3>
-                <p className="text-base-content/60">Description placeholder</p>
-                <div className="card-actions justify-end">
-                  <a className="btn btn-primary btn-sm">View Details</a>
-                </div>
-              </div>
-            </div>
-          ))}
+      {/* All Clinics */}
+      <section id="map" className="py-12 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold mb-6 text-slate-800">All Clinics</h2>
+          <ClinicList clinics={clinics} />
         </div>
       </section>
     </div>
